@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Gclusters
 {
+    using System.Collections.Generic;
+    using Newtonsoft.Json;
+
     internal class Program
     {
         private static void Main(string[] args)
@@ -40,6 +43,8 @@ namespace Gclusters
 
                 var clusterInfo = new ClusterProcessor(clusterNames.First());
 
+                var clusterToGridPoints = new Dictionary<string, List<(int, int)>>();
+
                 for (var i = 0; i < args.Length; i++)
                 {
                     if (optionIndex == -1 || (i != optionIndex && i != optionIndex + 1))
@@ -55,7 +60,17 @@ namespace Gclusters
                             {
                                 var name = StationCodeConverter.GetNameFromNlc(station) ?? "name of station unknown.";
                                 Console.WriteLine($"{station} {name}");
+                                var crs = StationCodeConverter.GetCrsFromNlc(station);
+                                if (!string.IsNullOrEmpty(crs))
+                                {
+                                    var grid = Naptan.GetGridPoint(crs);
+                                    if (grid.eastings != int.MaxValue)
+                                    {
+                                        DictUtils.AddEntryToList(clusterToGridPoints, args[i], grid);
+                                    }
+                                }
                             }
+                            //var outfile = @"s:\points.js";
                         }
                         else
                         {
@@ -66,6 +81,8 @@ namespace Gclusters
                         }
                     }
                 }
+                var result = JsonConvert.SerializeObject(clusterToGridPoints, Formatting.Indented);
+                Console.WriteLine(result);
             }
             catch (Exception ex)
             {
