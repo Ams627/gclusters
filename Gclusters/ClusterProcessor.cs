@@ -1,0 +1,57 @@
+﻿namespace Gclusters
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Globalization;
+    using System.IO;
+    internal class ClusterProcessor
+    {
+        private readonly string filename;
+        private readonly Dictionary<string, List<string>> stationToClusters = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, List<string>> clusterToStations = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+        public ClusterProcessor(string filename)
+        {
+            this.filename = filename;
+            int linenumber = 0;
+            foreach (var line in File.ReadLines(filename).Where(x=>x.Length > 0 && x[0] != '/'))
+            {
+                if (!DateTime.TryParseExact(line.Substring(9, 8), "ddMMyyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var endDate))
+                {
+                    throw new Exception($"invalid date {line.Substring(9, 8)} in cluster file {filename} at line {linenumber + 1}");
+                }
+                if (!DateTime.TryParseExact(line.Substring(17, 8), "ddMMyyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var startDate))
+                {
+                    throw new Exception($"invalid date {line.Substring(17, 8)} in cluster file {filename} at line {linenumber + 1}");
+                }
+                if (endDate < startDate)
+                {
+                    throw new Exception($"End date before start date in cluster file {filename} at line {linenumber + 1}");
+                }
+                var clusterId = line.Substring(1, 4);
+                var stationNlc = line.Substring(5, 4);
+
+                if (endDate >= DateTime.Today)
+                {
+                    DictUtils.AddEntryToList(stationToClusters, stationNlc, clusterId);
+                    DictUtils.AddEntryToList(clusterToStations, clusterId, stationNlc);
+                }
+
+                linenumber++;
+            }
+        }
+
+        public (List<string> list, bool isCluster) GetInfo(string code)
+        {
+            if (stationToClusters.TryGetValue(code, out var clusters))
+            {
+                return (clusters, false);
+            }
+            if (clusterToStations.TryGetValue(code, out var stations))
+            {
+                return (stations, true);
+            }
+            return (null, false);
+        }
+    }
+}
