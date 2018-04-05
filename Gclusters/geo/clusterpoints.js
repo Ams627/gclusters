@@ -1293,6 +1293,24 @@ clusterInfo=
       "Item1": 551957,
       "Item2": 146480
     }
+  ],
+  "Q504": [
+    {
+      "Item1": 238600,
+      "Item2": 370200
+    },
+    {
+      "Item1": 234882,
+      "Item2": 372360
+    },
+    {
+      "Item1": 252600,
+      "Item2": 371600
+    },
+    {
+      "Item1": 257500,
+      "Item2": 371600
+    }
   ]
 }
 stationInfo=
@@ -3877,6 +3895,40 @@ stationInfo=
       "Clusters": null,
       "Eastings": 551957,
       "Northings": 146480
+    }
+  ],
+  "Q504": [
+    {
+      "Name": "Bodorgan",
+      "Crs": "BOR",
+      "Nlc": "2435",
+      "Clusters": null,
+      "Eastings": 238600,
+      "Northings": 370200
+    },
+    {
+      "Name": "Ty Croes",
+      "Crs": "TYC",
+      "Nlc": "2439",
+      "Clusters": null,
+      "Eastings": 234882,
+      "Northings": 372360
+    },
+    {
+      "Name": "Llanfairpwll",
+      "Crs": "LPG",
+      "Nlc": "2467",
+      "Clusters": null,
+      "Eastings": 252600,
+      "Northings": 371600
+    },
+    {
+      "Name": "Bangor (Gwynedd)",
+      "Crs": "BNG",
+      "Nlc": "2471",
+      "Clusters": null,
+      "Eastings": 257500,
+      "Northings": 371600
     }
   ]
 }

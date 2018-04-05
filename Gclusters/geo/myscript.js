@@ -80,4 +80,33 @@ window.onload = () => {
 
     var circles = document.querySelector("#circles");
     addCircles2(circles, stationInfo);
+
+    var svgElement = document.querySelector('#map');
+    svgPanZoom(svgElement);
+
+    //svgPanZoom(svgElement, {
+    //    viewportSelector: '.svg-pan-zoom_viewport'
+    //    , panEnabled: true
+    //    , controlIconsEnabled: false
+    //    , zoomEnabled: true
+    //    , dblClickZoomEnabled: true
+    //    , mouseWheelZoomEnabled: true
+    //    , preventMouseEventsDefault: true
+    //    , zoomScaleSensitivity: 0.2
+    //    , minZoom: 0.1
+    //    , maxZoom: 200
+    //    , fit: true
+    //    , contain: false
+    //    , center: true
+    //    , refreshRate: 'auto'
+    //    , beforeZoom: function () { }
+    //    , onZoom: function () { }
+    //    , beforePan: function () { }
+    //    , onPan: function () { }
+    //    , onUpdatedCTM: function () { }
+    //    , customEventsHandler: {}
+    //    , eventsListenerElement: null
+    //});
+
+
 }
