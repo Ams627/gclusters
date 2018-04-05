@@ -1,6 +1,7 @@
 ﻿namespace Gclusters
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     internal static class Naptan
     {
@@ -2608,6 +2609,8 @@
             }
             return (eastings, northings);
         }
+
+        public static IEnumerable<(string crs, int eastings, int northings)> AllGeoCrs => CrsToGrid.Select(x=>(x.Key, x.Value.Item1, x.Value.Item2));
     }
 }
 

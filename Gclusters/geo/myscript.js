@@ -1,7 +1,4 @@
 window.onload = () => {
-    //var maxIndex = 319;
-    //var ar = coastline.features[319].geometry.coordinates;
-
     var maxX = Math.max(...coastline.features.map(x => Math.max(...x.geometry.coordinates.map(y => y[0]))));
     var maxY = Math.max(...coastline.features.map(x => Math.max(...x.geometry.coordinates.map(y => y[1]))));
     var minX = Math.min(...coastline.features.map(x => Math.min(...x.geometry.coordinates.map(y => y[0]))));
@@ -45,6 +42,7 @@ window.onload = () => {
         shape.setAttributeNS(null, "cy", scaleY(y));
         shape.setAttributeNS(null, "r", 1);
         shape.setAttributeNS(null, "fill", colour);
+        shape.setAttributeNS(null, "stroke", "none");
 
         var titleElement = document.createElementNS(svgns, "title");
         titleElement.textContent = title;
@@ -74,39 +72,68 @@ window.onload = () => {
     }
 
 
-    var svg = document.querySelector("#ukmap");
-    coastline.features.forEach(x => addPath(svg, `M${scaleX(x.geometry.coordinates[0][0])} ${scaleY(x.geometry.coordinates[0][1])} ${x.geometry.coordinates.slice(1).map(x => "L" + scaleX(x[0]) + " " + scaleY(x[1])).join(' ')}`));
+    var coastElement = document.querySelector("#ukmap");
+    var railwaysElement = document.querySelector("#ukrailways");
+    coastline.features.forEach(x => addPath(coastElement, `M${scaleX(x.geometry.coordinates[0][0])} ${scaleY(x.geometry.coordinates[0][1])} ${x.geometry.coordinates.slice(1).map(x => "L" + scaleX(x[0]) + " " + scaleY(x[1])).join(' ')}`));
+//    console.log(railways);
+    railways.geometries.forEach(x => addPath(railwaysElement, `M${scaleX(x.coordinates[0][0])} ${scaleY(x.coordinates[0][1])} ${x.coordinates.slice(1).map(x => "L" + scaleX(x[0]) + " " + scaleY(x[1])).join(' ')}`));
     //console.log(clusterInfo);
 
     var circles = document.querySelector("#circles");
     addCircles2(circles, stationInfo);
 
     var svgElement = document.querySelector('#map');
-    svgPanZoom(svgElement);
+//    svgPanZoom(svgElement).s
+    //svgPanZoom.setOnZoom(() => console.log(svgPanZoom.getZoom()));
 
-    //svgPanZoom(svgElement, {
-    //    viewportSelector: '.svg-pan-zoom_viewport'
-    //    , panEnabled: true
-    //    , controlIconsEnabled: false
-    //    , zoomEnabled: true
-    //    , dblClickZoomEnabled: true
-    //    , mouseWheelZoomEnabled: true
-    //    , preventMouseEventsDefault: true
-    //    , zoomScaleSensitivity: 0.2
-    //    , minZoom: 0.1
-    //    , maxZoom: 200
-    //    , fit: true
-    //    , contain: false
-    //    , center: true
-    //    , refreshRate: 'auto'
-    //    , beforeZoom: function () { }
-    //    , onZoom: function () { }
-    //    , beforePan: function () { }
-    //    , onPan: function () { }
-    //    , onUpdatedCTM: function () { }
-    //    , customEventsHandler: {}
-    //    , eventsListenerElement: null
-    //});
+    svgPanZoom(svgElement, {
+        viewportSelector: '.svg-pan-zoom_viewport'
+        , panEnabled: true
+        , controlIconsEnabled: false
+        , zoomEnabled: true
+        , dblClickZoomEnabled: true
+        , mouseWheelZoomEnabled: true
+        , preventMouseEventsDefault: true
+        , zoomScaleSensitivity: 0.2
+        , minZoom: 0.1
+        , maxZoom: 200
+        , fit: true
+        , contain: false
+        , center: true
+        , refreshRate: 'auto'
+        , beforeZoom: function () { }
+        , onZoom: function () {
+            var zoom = this.getZoom();
+            var svg = document.querySelector('#map');
+            var circleElements = svg.getElementsByTagName("circle");
+            var radius = 1;
+            if (zoom > 2.0) {
+                radius = 0.1;
+                console.log(`too big ${zoom}`);
+            }
+            else if (zoom > 1.5) {
+                radius = 0.2;
+                console.log(`too big ${zoom}`);
+            }
+            else if (zoom > 1.0) {
+                radius = 0.3;
+                console.log(`too big ${zoom}`);
+            }
+            else if (zoom > 0.5) {
+                radius = 0.4;
+                console.log(`too big ${zoom}`);
+            }
+            for (var j = 0; j < circleElements.length; j++) {
+                console.log(circleElements[j].getAttribute("r"));
+            }
+            var array = Array.prototype.slice.call(circleElements);
+            array.forEach(x => x.setAttribute("r", radius));
+        }
+        , beforePan: function () { }
+        , onPan: function () { }
+        , onUpdatedCTM: function () { }
+        , eventsListenerElement: null
+    });
 
 
 }

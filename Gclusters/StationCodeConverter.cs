@@ -1,9 +1,12 @@
 ﻿namespace Gclusters
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     internal static class StationCodeConverter
     {
+        private static ILookup<string, string> crsToNlc;
         private static readonly Dictionary<string, string> nlcToName = new Dictionary<string, string>
         {
             {"0027", "Travelcard Zone 1"},
@@ -8314,6 +8317,12 @@
             {"N640", "RMR"}
 
         };
+
+        static StationCodeConverter()
+        {
+            crsToNlc = nlcToCrs.ToLookup(x => x.Value, x => x.Key);
+        }
+
         public static string GetNameFromNlc(string nlc)
         {
             nlcToName.TryGetValue(nlc, out var name);
@@ -8323,6 +8332,11 @@
         {
             nlcToCrs.TryGetValue(nlc, out var crs);
             return crs;
+        }
+        public static string GetNlcFromCrs(string crs)
+        {
+            var nlc = crsToNlc[crs];
+            return nlc.FirstOrDefault() ?? "Unknown station";
         }
     }
 }

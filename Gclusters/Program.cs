@@ -10,18 +10,29 @@ namespace Gclusters
     using System.Collections.Generic;
     using Newtonsoft.Json;
 
-    internal class StationInfo
-    {
-        public string Name { get; set; }
-        public string Crs { get; set; }
-        public string Nlc { get; set; }
-        public List<string> Clusters { get; set; }
-        public int Eastings { get; set; }
-        public int Northings { get; set; }
-    }
-
     internal class Program
     {
+        private static void WriteAllStations()
+        {
+            var allStationsFile = Path.Combine(Directory.GetCurrentDirectory(), "allstations.js");
+            var allStations = Naptan.AllGeoCrs;
+
+            var stationInfoList = from station in allStations
+                let nlc = StationCodeConverter.GetNlcFromCrs(station.crs)
+                select new StationInfo
+                {
+                    Crs = station.crs,
+                    Eastings = station.eastings,
+                    Northings = station.northings,
+                    Nlc = StationCodeConverter.GetNlcFromCrs(station.crs),
+                    Name = StationCodeConverter.GetNameFromNlc(nlc)
+                };
+            var json = JsonConvert.SerializeObject(stationInfoList, Formatting.Indented);
+            using (var strw = new StreamWriter(allStationsFile))
+            {
+                strw.WriteLine($"allstations= {json}");
+            }
+        }
         private static void Main(string[] args)
         {
             try
@@ -51,8 +62,9 @@ namespace Gclusters
                     throw new Exception($"More than one cluster (.FSC) files in the directory {rjisDirectory}");
                 }
 
-                var clusterInfo = new ClusterProcessor(clusterNames.First());
+                WriteAllStations();
 
+                var clusterInfo = new ClusterProcessor(clusterNames.First());
                 var clusterToGridPoints = new Dictionary<string, List<(int, int)>>();
                 var clusterToStationList = new Dictionary<string, List<StationInfo>>();
 

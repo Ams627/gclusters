@@ -55,6 +55,7 @@
     <Compile Include="StationCodeConverter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StationInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -63,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="geo\myscript.js" />
+    <Content Include="geo\railways.js" />
     <Content Include="geo\t1.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
