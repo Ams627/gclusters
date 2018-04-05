@@ -10,6 +10,16 @@ namespace Gclusters
     using System.Collections.Generic;
     using Newtonsoft.Json;
 
+    internal class StationInfo
+    {
+        public string Name { get; set; }
+        public string Crs { get; set; }
+        public string Nlc { get; set; }
+        public List<string> Clusters { get; set; }
+        public int Eastings { get; set; }
+        public int Northings { get; set; }
+    }
+
     internal class Program
     {
         private static void Main(string[] args)
@@ -44,6 +54,7 @@ namespace Gclusters
                 var clusterInfo = new ClusterProcessor(clusterNames.First());
 
                 var clusterToGridPoints = new Dictionary<string, List<(int, int)>>();
+                var clusterToStationList = new Dictionary<string, List<StationInfo>>();
 
                 for (var i = 0; i < args.Length; i++)
                 {
@@ -54,7 +65,7 @@ namespace Gclusters
                         {
                             Console.Error.WriteLine($"{args[i]} nothing found.");
                         }
-                        if (isCluster)
+                        else if (isCluster)
                         {
                             foreach (var station in list)
                             {
@@ -67,10 +78,28 @@ namespace Gclusters
                                     if (grid.eastings != int.MaxValue)
                                     {
                                         DictUtils.AddEntryToList(clusterToGridPoints, args[i], grid);
+                                        DictUtils.AddEntryToList(clusterToStationList, args[i], new StationInfo
+                                        {
+                                            Nlc = station,
+                                            Crs = StationCodeConverter.GetCrsFromNlc(crs),
+                                            Eastings = grid.eastings,
+                                            Northings = grid.northings,
+                                            Name = StationCodeConverter.GetNameFromNlc(station),
+                                        });
                                     }
                                 }
                             }
-                            //var outfile = @"s:\points.js";
+                            var directory = Directory.GetCurrentDirectory();
+                            var outfile = Path.Combine(directory, "clusterpoints.js");
+                            var json1 = JsonConvert.SerializeObject(clusterToGridPoints, Formatting.Indented);
+                            var json2 = JsonConvert.SerializeObject(clusterToStationList, Formatting.Indented);
+                            using (var strw = new StreamWriter(outfile))
+                            {
+                                strw.WriteLine("clusterInfo=");
+                                strw.WriteLine(json1);
+                                strw.WriteLine("stationInfo=");
+                                strw.WriteLine(json2);
+                            }
                         }
                         else
                         {
@@ -81,8 +110,6 @@ namespace Gclusters
                         }
                     }
                 }
-                var result = JsonConvert.SerializeObject(clusterToGridPoints, Formatting.Indented);
-                Console.WriteLine(result);
             }
             catch (Exception ex)
             {
