@@ -39,12 +39,17 @@ window.onload = () => {
         return color;
     }
 
-    function addCircle(svg, x, y, colour) {
+    function addCircle(svg, x, y, title, colour) {
         var shape = document.createElementNS(svgns, "circle");
         shape.setAttributeNS(null, "cx", scaleX(x));
         shape.setAttributeNS(null, "cy", scaleY(y));
         shape.setAttributeNS(null, "r", 1);
         shape.setAttributeNS(null, "fill", colour);
+
+        var titleElement = document.createElementNS(svgns, "title");
+        titleElement.textContent = title;
+        shape.appendChild(titleElement);
+
         svg.appendChild(shape);
     }
 
@@ -58,10 +63,21 @@ window.onload = () => {
         }
     }
 
+    function addCircles2(svg, info) {
+        for (var key in info) {
+            var colour = getRandomColor();
+            var list = info[key];
+            for (var i = 0; i < list.length; i++) {
+                addCircle(svg, list[i].Eastings, list[i].Northings, `${key} ${list[i].Name} (${list[i].Crs} ${list[i].Nlc})`, colour);
+            }
+        }
+    }
+
+
     var svg = document.querySelector("#ukmap");
     coastline.features.forEach(x => addPath(svg, `M${scaleX(x.geometry.coordinates[0][0])} ${scaleY(x.geometry.coordinates[0][1])} ${x.geometry.coordinates.slice(1).map(x => "L" + scaleX(x[0]) + " " + scaleY(x[1])).join(' ')}`));
     //console.log(clusterInfo);
 
     var circles = document.querySelector("#circles");
-    addCircles(circles, clusterInfo);
+    addCircles2(circles, stationInfo);
 }

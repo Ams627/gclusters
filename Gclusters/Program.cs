@@ -81,7 +81,7 @@ namespace Gclusters
                                         DictUtils.AddEntryToList(clusterToStationList, args[i], new StationInfo
                                         {
                                             Nlc = station,
-                                            Crs = StationCodeConverter.GetCrsFromNlc(crs),
+                                            Crs = StationCodeConverter.GetCrsFromNlc(station),
                                             Eastings = grid.eastings,
                                             Northings = grid.northings,
                                             Name = StationCodeConverter.GetNameFromNlc(station),
