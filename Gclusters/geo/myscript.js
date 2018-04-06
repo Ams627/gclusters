@@ -86,6 +86,9 @@ window.onload = () => {
 //    svgPanZoom(svgElement).s
     //svgPanZoom.setOnZoom(() => console.log(svgPanZoom.getZoom()));
 
+
+    var radii = [3, 3, 3, 2, 1, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5];
+
     svgPanZoom(svgElement, {
         viewportSelector: '.svg-pan-zoom_viewport'
         , panEnabled: true
@@ -106,26 +109,26 @@ window.onload = () => {
             var zoom = this.getZoom();
             var svg = document.querySelector('#map');
             var circleElements = svg.getElementsByTagName("circle");
-            var radius = 1;
-            if (zoom > 2.0) {
-                radius = 0.1;
-                console.log(`too big ${zoom}`);
+
+            var radius = 1 / zoom;
+            if (radius > 1) {
+                radius = 1;
             }
-            else if (zoom > 1.5) {
+            else if (radius < 0.2) {
                 radius = 0.2;
-                console.log(`too big ${zoom}`);
             }
-            else if (zoom > 1.0) {
-                radius = 0.3;
-                console.log(`too big ${zoom}`);
-            }
-            else if (zoom > 0.5) {
-                radius = 0.4;
-                console.log(`too big ${zoom}`);
-            }
-            for (var j = 0; j < circleElements.length; j++) {
-                console.log(circleElements[j].getAttribute("r"));
-            }
+            console.log(`radius ${radius} zoom ${zoom}`);
+            //for (var i = radii.length; i >= 0; i--)
+            //{
+            //    if (zoom * 3 > i) {
+            //        radius = radii[i];
+            //        console.log(`radius ${radius} zoom ${zoom}`);
+            //        break;
+            //    }
+            //}
+            //for (var j = 0; j < circleElements.length; j++) {
+            //    console.log(circleElements[j].getAttribute("r"));
+            //}
             var array = Array.prototype.slice.call(circleElements);
             array.forEach(x => x.setAttribute("r", radius));
         }
