@@ -24,6 +24,7 @@ window.onload = () => {
     function addPath(svg, pathD) {
         var path = document.createElementNS(svgns, "path");
         path.setAttributeNS(null, "d", pathD);
+        path.setAttributeNS(null, "vector-effect", "non-scaling-stroke");
         svg.appendChild(path);
     }
 
