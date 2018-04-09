@@ -83,11 +83,36 @@ window.onload = () => {
     addCircles2(circles, stationInfo);
 
     var svgElement = document.querySelector('#map');
+    svgElement.addEventListener("click", (e) => {
+        e = e || window.event;
+        var target = e.target || e.srcElement;
+        var text = target.textContent || text.innerText;
+        console.log(`${target.tagName} ${e.clientX} ${e.clientY}`)
+
+        if (target.tagName == "circle") {
+            var popup = document.getElementById("stationPopup");
+            console.log(e.clientX);
+            popup.style.left = `${e.clientX}px`;
+            popup.style.top = `${e.clientY}px`;
+            popup.classList.toggle("show");
+        }
+    });
+
+    console.log("Adding listener");
+    //document.addEventListener("click", (e) => {
+    //    e = e || window.event;
+    //    var target = e.target || e.srcElement;
+    //    var text = target.textContent || text.innerText;
+    //    console.log(`${target.tagName} ${e.clientX} ${e.clientY}`)
+    //    var popup = document.getElementById("stationPopup");
+    //    console.log(e.clientX);
+    //    popup.style.left = `${e.clientX}px`;
+    //    popup.style.top = `${e.clientY}px`;
+    //    popup.classList.toggle("show");
+    //});
+
 //    svgPanZoom(svgElement).s
     //svgPanZoom.setOnZoom(() => console.log(svgPanZoom.getZoom()));
-
-
-    var radii = [3, 3, 3, 2, 1, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5];
 
     svgPanZoom(svgElement, {
         viewportSelector: '.svg-pan-zoom_viewport'
@@ -118,17 +143,6 @@ window.onload = () => {
                 radius = 0.2;
             }
             console.log(`radius ${radius} zoom ${zoom}`);
-            //for (var i = radii.length; i >= 0; i--)
-            //{
-            //    if (zoom * 3 > i) {
-            //        radius = radii[i];
-            //        console.log(`radius ${radius} zoom ${zoom}`);
-            //        break;
-            //    }
-            //}
-            //for (var j = 0; j < circleElements.length; j++) {
-            //    console.log(circleElements[j].getAttribute("r"));
-            //}
             var array = Array.prototype.slice.call(circleElements);
             array.forEach(x => x.setAttribute("r", radius));
         }

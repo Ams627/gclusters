@@ -65,7 +65,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="geo\myscript.js" />
+    <Content Include="geo\popup-test.html" />
+    <Content Include="geo\popup-test2.html" />
     <Content Include="geo\railways.js" />
+    <Content Include="geo\styles.css" />
     <Content Include="geo\t1.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

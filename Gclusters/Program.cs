@@ -38,6 +38,7 @@ namespace Gclusters
 
             var stationInfoList = from station in allStations
                 let nlc = StationCodeConverter.GetNlcFromCrs(station.crs)
+                let gridPosition = GridLocation.CreateFromOsGrid(station.eastings, station.northings)
                 select new StationInfo
                 {
                     Crs = station.crs,
@@ -45,7 +46,8 @@ namespace Gclusters
                     Northings = station.northings,
                     Nlc = StationCodeConverter.GetNlcFromCrs(station.crs),
                     Name = StationCodeConverter.GetNameFromNlc(nlc),
-                    Latitude = GridLocation.CreateFromDegrees(,
+                    Latitude = gridPosition.Latitude * 180 / Math.PI,
+                    Longitude = gridPosition.Longitude * 180 / Math.PI,
                 };
             var json = JsonConvert.SerializeObject(stationInfoList, Formatting.Indented);
             using (var strw = new StreamWriter(allStationsFile))
