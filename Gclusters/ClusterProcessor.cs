@@ -33,7 +33,7 @@ namespace Gclusters
         {
             this.filename = filename;
             int linenumber = 0;
-            foreach (var line in File.ReadLines(filename).Where(x=>x.Length > 0 && x[0] != '/'))
+            foreach (var line in File.ReadLines(filename).Where(x => x.Length > 0 && x[0] != '/'))
             {
                 if (!DateTime.TryParseExact(line.Substring(9, 8), "ddMMyyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var endDate))
                 {
@@ -72,5 +72,7 @@ namespace Gclusters
             }
             return (null, false);
         }
+
+        public Dictionary<string, List<string>> GetAllClusters => clusterToStations;
     }
 }
