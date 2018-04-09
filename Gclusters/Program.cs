@@ -38,6 +38,7 @@ namespace Gclusters
 
             var stationInfoList = from station in allStations
                 let nlc = StationCodeConverter.GetNlcFromCrs(station.crs)
+                let latlon = GridLocation.CreateFromOsGrid(station.eastings, station.northings)
                 select new StationInfo
                 {
                     Crs = station.crs,
@@ -45,7 +46,8 @@ namespace Gclusters
                     Northings = station.northings,
                     Nlc = StationCodeConverter.GetNlcFromCrs(station.crs),
                     Name = StationCodeConverter.GetNameFromNlc(nlc),
-                    Latitude = GridLocation.CreateFromDegrees(,
+                    Latitude = latlon.Latitude,
+                    Longitude = latlon.Longitude
                 };
             var json = JsonConvert.SerializeObject(stationInfoList, Formatting.Indented);
             using (var strw = new StreamWriter(allStationsFile))
@@ -71,20 +73,20 @@ namespace Gclusters
                     }
                     rjisDirectory = args[optionIndex + 1];
                 }
-                var clusterNames = Directory.GetFiles(rjisDirectory, "RJFAF*.FSC").ToList();
-                clusterNames.RemoveAll(x => !Regex.Match(x, @"RJFAF\d\d\d.FSC").Success);
-                if (!clusterNames.Any())
+                var clusterFilenames = Directory.GetFiles(rjisDirectory, "RJFAF*.FSC").ToList();
+                clusterFilenames.RemoveAll(x => !Regex.Match(x, @"RJFAF\d\d\d.FSC").Success);
+                if (!clusterFilenames.Any())
                 {
                     throw new Exception($"No cluster (.FSC) files in the directory {rjisDirectory}");
                 }
-                if (clusterNames.Count() > 1)
+                if (clusterFilenames.Count() > 1)
                 {
                     throw new Exception($"More than one cluster (.FSC) files in the directory {rjisDirectory}");
                 }
 
                 WriteAllStations();
 
-                var clusterInfo = new ClusterProcessor(clusterNames.First());
+                var clusterInfo = new ClusterProcessor(clusterFilenames.First());
                 var clusterToGridPoints = new Dictionary<string, List<(int, int)>>();
                 var clusterToStationList = new Dictionary<string, List<StationInfo>>();
 
@@ -131,6 +133,16 @@ namespace Gclusters
                                 strw.WriteLine(json1);
                                 strw.WriteLine("stationInfo=");
                                 strw.WriteLine(json2);
+                            }
+
+                            var outFilename = Path.Combine(directory, "clustersizes.txt");
+                            var sortedClusters = clusterInfo.GetAllClusters.OrderByDescending(x => x.Value.Count);
+                            using (var str = new StreamWriter(outFilename))
+                            {
+                                foreach (var cluster in sortedClusters)
+                                {
+                                    str.WriteLine($"{cluster.Key}, {cluster.Value.Count}");
+                                }
                             }
                         }
                         else
