@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="ClusterProcessor.cs" />
     <Compile Include="DictUtils.cs" />
+    <Compile Include="GridLocation.cs" />
     <Compile Include="Naptan.cs" />
     <Compile Include="StationCodeConverter.cs" />
     <Compile Include="Program.cs" />

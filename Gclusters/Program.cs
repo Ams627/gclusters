@@ -25,7 +25,8 @@ namespace Gclusters
                     Eastings = station.eastings,
                     Northings = station.northings,
                     Nlc = StationCodeConverter.GetNlcFromCrs(station.crs),
-                    Name = StationCodeConverter.GetNameFromNlc(nlc)
+                    Name = StationCodeConverter.GetNameFromNlc(nlc),
+                    Latitude = GridLocation.CreateFromDegrees(,
                 };
             var json = JsonConvert.SerializeObject(stationInfoList, Formatting.Indented);
             using (var strw = new StreamWriter(allStationsFile))
